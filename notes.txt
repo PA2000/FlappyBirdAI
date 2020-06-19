@@ -1,0 +1,13 @@
+Inputs: bird's height(y value)
+	distace from top pipe
+	distance from bottom pipe
+Outputs:
+	Only one output - jump or don't jump
+Activation Function:
+	A bounded function. TanH or Sigmoid
+Population Size:
+	15
+Fitness Function:
+	Greater distance == Greater Fitness
+Max Generations:
+	30
