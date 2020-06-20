@@ -30,11 +30,11 @@ def drawWindow(win, birds, pipes, base, score, gen, numAlive):
       bird.draw(win)
    base.draw(win)
 
-   text = font.render("Score: " + str(score), 1, (255, 255, 255))
+   text = font.render("Score: " + str(score), 1, (255, 0, 0))
    win.blit(text, (winWidth - 10 - text.get_width(), 10))
-   text = font.render("Gen: " + str(gen), 1, (255, 255, 255))
+   text = font.render("Gen: " + str(gen), 1, (0, 0, 0))
    win.blit(text, (10, 10))
-   text = font.render("Num Alive: " + str(numAlive), 1, (255, 255, 255))
+   text = font.render("Num Alive: " + str(numAlive), 1, (0, 0, 0))
    win.blit(text, (10, 50))
 
    pygame.display.update()
@@ -128,6 +128,7 @@ def fitness(genomes, config):
          for g in ge:
                g.fitness += score
       
+      #STOP Birds from flying through ground or sky above pipe
       for x, bird in enumerate(birds):
          if bird.y + bird.img.get_height() >= 730 or bird.y < 0: 
             birds.pop(x)
@@ -136,15 +137,15 @@ def fitness(genomes, config):
       
       base.move()
       drawWindow(win, birds, pipes, base, score, gen, numAlive)
-      if score > 0:
-         bestFitness, index = 0, 0
-         if len(ge) > 130:
-            for g in ge:
-               if g.fitness > bestFitness:
-                  bestFitness = g.fitness
-                  index += 1
+
+      #Grab best bird using pickle
+      if score > 140:
+         index, bestFitness = 0, 0
+         for x, g in enumerate(ge):
+            if g.fitness > bestFitness:
+               index, bestFitness = x, g.fitness
          pickle.dump(nets[index], open("victor.pickle", "wb"))
-         print('changed victor file, score:' + str(score) + ' ' + str(index))
+         print('changed victor file, score:' + str(score) + ', index in ge: ' + str(index))
          break
    
 def run(configFile):

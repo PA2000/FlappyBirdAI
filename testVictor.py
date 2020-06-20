@@ -17,7 +17,7 @@ windHeight = 800
 #load background
 bgImg = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bg.png")))
 #font for score
-font = pygame.font.SysFont('agencyfb', 50)
+font = pygame.font.SysFont('agencyfb', 70)
 
 
 def drawWindow(win, bird, pipes, base, score):
@@ -26,8 +26,8 @@ def drawWindow(win, bird, pipes, base, score):
    for pipe in pipes:
       pipe.draw(win)
    base.draw(win)
-   text = font.render("Score: " + str(score), 1, (255, 255, 255))
-   win.blit(text, (winWidth - 10 - text.get_width(), 10))
+   text = font.render("Score: " + str(score), 1, (255, 0, 0))
+   win.blit(text, (winWidth/2 - text.get_width()/2, 10))
    pygame.display.update()
 
 def game(neural_net):
