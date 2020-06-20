@@ -1,18 +1,25 @@
 import pygame
 import os
 import random
+import math
 
 class Pipe:
    #load image
    pipeImg = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "pipe.png")))
    gap = 200
-   vel = 5
 
-   def __init__(self, x):
+   def __init__(self, x, score):
       self.x = x
       self.height = 0
       self.top = 0 #top of object, not indiviual pipe
       self.bottom = 0 #bottom of object, not indiviual pipe
+
+      if score < 40:
+         self.vel = 4
+      elif score < 100:
+         self.vel = math.floor(score/10)
+      else:
+         self.vel = 10  
 
       #seperate images for top and bottom pipes
       self.topPipe = pygame.transform.flip(self.pipeImg, False, True)
@@ -38,9 +45,9 @@ class Pipe:
       topMask = pygame.mask.from_surface(self.topPipe)
       bottomMask = pygame.mask.from_surface(self.bottomPipe)
 
-      topOffset = (self.x - bird.x, self.top - round(bird.y))
-      bottomOffset = (self.x - bird.x, self.bottom - round(bird.y))
-
+      topOffset = (round(self.x - bird.x), self.top - round(bird.y))
+      bottomOffset = (round(self.x - bird.x), self.bottom - round(bird.y))
+      
       bottomPoint = birdMask.overlap(bottomMask, bottomOffset)
       topPoint = birdMask.overlap(topMask, topOffset)
       if topPoint or bottomPoint:

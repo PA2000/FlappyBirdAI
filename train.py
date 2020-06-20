@@ -6,12 +6,14 @@ pygame.font.init()
 import neat
 import time
 import random
+import pickle
 from Bird import Bird
 from Pipe import Pipe
 from Base import Base
 
 #GLOBAL: Generation number
 gen = 0;
+bestOfEachGen = []
 #set window parameters
 winWidth = 500
 windHeight = 800
@@ -46,7 +48,7 @@ def fitness(genomes, config):
    ge = [] #list of genomes
    birds = [] 
 
-   for _, g in genomes: #genomes is a TUPLE: (genome id, genome object); we only care about genome object
+   for _, g in genomes: #genomes is a TUPLE: (genome key, genome object); we only care about genome object
       net = neat.nn.FeedForwardNetwork.create(g, config)
       nets.append(net)
       birds.append(Bird(230, 350))
@@ -54,15 +56,15 @@ def fitness(genomes, config):
       ge.append(g)
 
    base = Base(700)
-   pipes = [Pipe(730)]
+   score = 0
+   pipes = [Pipe(730, score)]
    win = pygame.display.set_mode((winWidth, windHeight))
    pygame.display.set_caption("Padmank's Flappy Bird AI")
    clock = pygame.time.Clock()
-   score = 0
 
    run = True
    while run:
-      clock.tick(30)
+      clock.tick(60)
       for event in pygame.event.get():
          if event.type == pygame.QUIT:
             run = False
@@ -114,10 +116,18 @@ def fitness(genomes, config):
          score += 1
          for g in ge:
             g.fitness += 5
-         pipes.append(Pipe(500))
+         pipes.append(Pipe(600, score))
       for r in removePipes:
          pipes.remove(r)
 
+      #INCENTIVE To progress past 50, 60, 70, etc.
+      if score > 50 and score % 10 == 0:
+         if score > 100:
+            for g in ge:
+               g.fitness += score
+         for g in ge:
+               g.fitness += score
+      
       for x, bird in enumerate(birds):
          if bird.y + bird.img.get_height() >= 730 or bird.y < 0: 
             birds.pop(x)
@@ -126,10 +136,16 @@ def fitness(genomes, config):
       
       base.move()
       drawWindow(win, birds, pipes, base, score, gen, numAlive)
-      '''if score > 10:
+      if score > 0:
+         bestFitness, index = 0, 0
+         if len(ge) > 130:
+            for g in ge:
+               if g.fitness > bestFitness:
+                  bestFitness = g.fitness
+                  index += 1
+         pickle.dump(nets[index], open("victor.pickle", "wb"))
+         print('changed victor file, score:' + str(score) + ' ' + str(index))
          break
-         '''
-      
    
 def run(configFile):
    config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
@@ -141,7 +157,9 @@ def run(configFile):
    p.add_reporter(neat.StatisticsReporter())
 
    victor = p.run(fitness, 50)
-   print(format(victor))
+   print(victor)
+   
+
 
 if __name__ == "__main__":
    local_dir = os.path.dirname(__file__)
