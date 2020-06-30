@@ -64,7 +64,7 @@ def fitness(genomes, config):
 
    run = True
    while run:
-      clock.tick(60)
+      clock.tick(30)
       for event in pygame.event.get():
          if event.type == pygame.QUIT:
             run = False
@@ -139,13 +139,13 @@ def fitness(genomes, config):
       drawWindow(win, birds, pipes, base, score, gen, numAlive)
 
       #Grab best bird using pickle
-      if score > 140:
+      if score > 150:
          index, bestFitness = 0, 0
          for x, g in enumerate(ge):
             if g.fitness > bestFitness:
                index, bestFitness = x, g.fitness
-         pickle.dump(nets[index], open("victor.pickle", "wb"))
-         print('changed victor file, score:' + str(score) + ', index in ge: ' + str(index))
+         pickle.dump(nets[index], open("winner.pickle", "wb"))
+         print('changed winner file, score:' + str(score) + ', index in ge: ' + str(index) + ', fitness:' + str(bestFitness))
          break
    
 def run(configFile):

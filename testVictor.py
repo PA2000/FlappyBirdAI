@@ -95,7 +95,7 @@ def game(neural_net):
          drawWindow(win, bird, pipes, base, score)  
 
 def main():
-   neural_net = pickle.load(open("victor.pickle", "rb"))
+   neural_net = pickle.load(open("winner.pickle", "rb"))
    print(neural_net)
    game(neural_net)
 

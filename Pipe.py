@@ -19,7 +19,7 @@ class Pipe:
       elif score < 110:
          self.vel = math.floor(score/10)
       else:
-         self.vel = 12  
+         self.vel = 11  
 
       #seperate images for top and bottom pipes
       self.topPipe = pygame.transform.flip(self.pipeImg, False, True)
